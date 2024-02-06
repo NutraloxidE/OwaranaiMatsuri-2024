@@ -48,8 +48,8 @@ window.switchLanguage = switchLanguage;
 const VignetteShader = {
   uniforms: {
     "tDiffuse": { type: "t", value: null },
-    "offset":   { type: "f", value: 1.0 },
-    "darkness": { type: "f", value: 1.0 }
+    "offset":   { type: "f", value: 1 },
+    "darkness": { type: "f", value: 1 }
   },
 
   vertexShader: [
@@ -84,6 +84,7 @@ import { GLTFLoader } from 'https://threejsfundamentals.org/threejs/resources/th
 import { DRACOLoader } from 'https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/loaders/DRACOLoader.js';
 import { EffectComposer } from 'https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/postprocessing/EffectComposer.js';
 import { ShaderPass } from 'https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/postprocessing/ShaderPass.js';
+import { RenderPass } from 'https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/postprocessing/RenderPass.js';
 
 
 window.addEventListener("load", init);
@@ -92,7 +93,7 @@ window.addEventListener('click', onMouseClick, false);
 
 let mixer;
 
-let camera, scene, renderer;
+let camera, scene, renderer, composer, renderPass, effectPass;
 
 let width, height;
 
@@ -221,7 +222,23 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
   camera = new THREE.PerspectiveCamera(45, width / height);
   //camera.position.set(0, 150, +500);
   camera.position.copy(cameraIntroStartPosition);
+
+  /**
+   * Post Processing
+   */
+
+  composer = new EffectComposer(renderer);
+  renderPass = new RenderPass(scene, camera);
+  composer.addPass(renderPass);
   
+  //vignette
+  effectPass = new ShaderPass(VignetteShader);
+  effectPass.renderToScreen = true;
+  composer.addPass(effectPass);
+
+  /**
+   * Scene Objects
+   */
 
   // light
   const dirLight = new THREE.AmbientLight(0xffffff, 1);
@@ -272,8 +289,8 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
   var cameraAdditionalMovements = new THREE.Vector3(0,0,0);
   var cameraCinameticBias = new THREE.Vector3(0,0,0);
   var cameraMouseBias = new THREE.Vector3(0,0,0);
-    var cameraMouseBiasWidth = 0;
-    var cameraMouseBiasHeight = 0;
+  var cameraMouseBiasWidth = 0;
+  var cameraMouseBiasHeight = 0;
 
   var cameraPreviousPosition = new THREE.Vector3(0,0,0);
 
@@ -322,7 +339,7 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
           console.log('LinearAccelerationSensor is not supported');
         }
         
-        console.log(gyrobias);
+        //console.log(gyrobias);
 
         cameraAdditionalMovements = cameraAdditionalMovements.add(gyrobias);
 
@@ -350,7 +367,8 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
     }
 
     //DO NOT EDIT LOWER THAN HERE ()
-    renderer.render(scene, camera);
+    composer.render();
+    //renderer.render(scene, camera); //apply this for normal render
     requestAnimationFrame(onUpdate_PerFrame);
   }
 }

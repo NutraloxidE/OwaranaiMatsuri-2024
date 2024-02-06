@@ -48,8 +48,8 @@ window.switchLanguage = switchLanguage;
 const VignetteShader = {
   uniforms: {
     "tDiffuse": { type: "t", value: null },
-    "offset":   { type: "f", value: 1 },
-    "darkness": { type: "f", value: 1 }
+    "offset":   { type: "f", value: 0.2 },
+    "darkness": { type: "f", value: -10 }
   },
 
   vertexShader: [
@@ -73,6 +73,66 @@ const VignetteShader = {
   ].join("\n")
 };
 
+const edgeDarkeningShader = {
+  uniforms: {
+    "tDiffuse": { type: "t", value: null }, // The texture to apply the effect to
+    "edgeDarkness": { type: "f", value: 0.5 }, // The amount of darkening at the edge
+    "centerDarkness": { type: "f", value: -0.2 } // The amount of darkening at the center
+  },
+
+  vertexShader: [
+    "varying vec2 vUv;",
+    "void main() {",
+    "vUv = uv;",
+    "gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+    "}"
+  ].join("\n"),
+
+  fragmentShader: [
+    "uniform float edgeDarkness;",
+    "uniform float centerDarkness;",
+    "uniform sampler2D tDiffuse;",
+    "varying vec2 vUv;",
+    "void main() {",
+    "vec4 texColor = texture2D( tDiffuse, vUv );",
+    "float dist = distance(vUv, vec2(0.5));", // Calculate distance from the center
+    "float darkness = mix(centerDarkness, edgeDarkness, smoothstep(0.0, 1.0, dist));", // Interpolate between center and edge darkness based on distance
+    "texColor.rgb *= 1.0 - darkness;", // Apply the darkness
+    "gl_FragColor = texColor;",
+    "}"
+  ].join("\n")
+};
+
+
+
+const contrastShader = {
+  uniforms: {
+    "tDiffuse": { type: "t", value: null }, // The texture to apply the effect to
+    "contrast": { type: "f", value: 0.95 }, // The amount of contrast
+    "brightness": { type: "f", value: 0.10 } // The amount of brightness
+  },
+
+  vertexShader: [
+    "varying vec2 vUv;",
+    "void main() {",
+    "vUv = uv;",
+    "gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+    "}"
+  ].join("\n"),
+
+  fragmentShader: [
+    "uniform float contrast;",
+    "uniform float brightness;",
+    "uniform sampler2D tDiffuse;",
+    "varying vec2 vUv;",
+    "void main() {",
+    "vec4 texColor = texture2D( tDiffuse, vUv );",
+    "texColor.rgb = ((texColor.rgb - 0.5) * max(contrast, 0.0)) + 0.5 + brightness;", // Apply contrast and brightness
+    "gl_FragColor = texColor;",
+    "}"
+  ].join("\n")
+};
+
 /**
  * ######################################
  * Initializes
@@ -85,7 +145,6 @@ import { DRACOLoader } from 'https://threejsfundamentals.org/threejs/resources/t
 import { EffectComposer } from 'https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/postprocessing/EffectComposer.js';
 import { ShaderPass } from 'https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/postprocessing/ShaderPass.js';
 import { RenderPass } from 'https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/postprocessing/RenderPass.js';
-
 
 window.addEventListener("load", init);
 window.addEventListener("resize", onResize);
@@ -224,17 +283,24 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
   camera.position.copy(cameraIntroStartPosition);
 
   /**
-   * Post Processing
+   * Post Processing (PostFX)
    */
 
   composer = new EffectComposer(renderer);
   renderPass = new RenderPass(scene, camera);
   composer.addPass(renderPass);
-  
-  //vignette
-  effectPass = new ShaderPass(VignetteShader);
-  effectPass.renderToScreen = true;
-  composer.addPass(effectPass);
+
+  //contrast
+  const contrast = new ShaderPass(contrastShader);
+  contrast.renderToScreen = true;
+  composer.addPass(contrast);
+
+  //edge darkening
+  const edgeDarkening = new ShaderPass(edgeDarkeningShader);
+  edgeDarkening.renderToScreen = true;
+  composer.addPass(edgeDarkening);
+
+
 
   /**
    * Scene Objects
@@ -297,12 +363,37 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
   //
   cameraTargetPosition = cameraIntroFinalPosition;
 
+  //init for onUpdate_PerFrame 
+  let isSmartphone = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  let godrayObject;
+  let isInitialized = false;
+  let brightness = 0;
+  let change = 0;
+
+  //update per frame
   function onUpdate_PerFrame(e) {
     passedFrame += 1;
+
+    //bloom shader time update
     
     //camera movement animation
     
     if(mainSceneModel){
+
+      //initialize after mainSceneModel is loaded
+      function initialize() {
+        // Add your initialization code here
+        godrayObject = mainSceneModel.getObjectByName('02_Godray');
+        console.log(godrayObject);
+        isInitialized = true;
+      }
+
+      if (!isInitialized) {
+        initialize();
+      }
+
+      // Rest of the code...
+
       //reset variables
       cameraAdditionalMovements.set(0,0,0);
       cameraResultedPositionForThisFrame.set(0,0,0);
@@ -313,8 +404,7 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
       cameraAdditionalMovements = cameraAdditionalMovements.add(cameraCinameticBias);
 
       //add gyro movement in case of smartphone
-      var isSmartphone = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      if(true){
+      if(isSmartphone){
         var howBigIsGyroYure = 100;
 
         var gyrobias = new THREE.Vector3(0,0,0);
@@ -345,6 +435,19 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
 
       }
 
+      ///Glow Godrays
+      function updateBrightness() {
+        change += Math.random() * 0.02 - 0.01;
+        change = Math.max(Math.min(change, 0.03), -0.03);
+        brightness += change;
+        brightness = Math.max(Math.min(brightness, 1), 0.8);
+      }
+      updateBrightness();
+
+      if (godrayObject) {
+        //godrayObject.material.emissive.setRGB(brightness, brightness, brightness);
+        godrayObject.material.opacity = brightness;
+      }
 
       ///move with mouse coordinate
       window.onmousemove = function (e) {

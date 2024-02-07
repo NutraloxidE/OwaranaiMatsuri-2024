@@ -40,6 +40,39 @@ function switchLanguage(lang) {
 window.switchLanguage = switchLanguage;
 
 /**
+ * Loading screen
+ */
+
+export let SceneBeingLoaded = false;
+
+/*
+window.addEventListener('load', function() {
+  SceneBeingLoaded = true;
+}); */
+
+let loadingScreen;
+
+window.onload = function() {
+  SceneBeingLoaded = true;  
+  loadingScreen = document.getElementById('loading-screen');
+
+  console.log(loadingScreen);
+}
+
+export function hideLoadingScreen() {
+  if(loadingScreen){
+    loadingScreen.style.opacity = '0';
+
+    setTimeout(function() {
+      loadingScreen.style.display = 'none';
+    }, 1000); // 1秒後にローディング画面を非表示にする
+  } else {
+    console.error('Element not found');
+  }
+}
+window.hideLoadingScreen = hideLoadingScreen;
+
+/**
  * 
  * Shaders
  * 
@@ -154,6 +187,10 @@ let mixer;
 
 let camera, scene, renderer, composer, renderPass, effectPass;
 
+let isSceneActive = false;
+window.isSceneActive = isSceneActive;
+
+
 let width, height;
 
 //resize window
@@ -169,6 +206,13 @@ function onResize() {
   camera.aspect = width / height;
   camera.updateProjectionMatrix();
 }
+
+//Activate Scene
+export function ActivateScene() {
+  window.isSceneActive = true;
+  hideLoadingScreen();
+}
+window.ActivateScene = ActivateScene;
 
 //Initialize
 function init() {
@@ -186,7 +230,14 @@ function init() {
 
   //レンダラーをコンテナに設定
   const container = document.getElementById( 'container' );
-  container.appendChild(renderer.domElement);
+  //container.appendChild(renderer.domElement); //old code
+  if (container) {
+    // ここでappendChildを呼び出す
+    container.appendChild(renderer.domElement);
+  } else {
+    console.warn('!!!!!Element not found');
+  }
+
 
   /**
    * Scenes Control
@@ -203,6 +254,17 @@ const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
 function onMouseClick(event) {
+
+  //touch to screen event for loading screen
+  if(SceneBeingLoaded == true){
+    console.log("Attempting to activate scene...")
+    window.ActivateScene();
+  }
+
+  if(window.isSceneActive == false){
+    console.log("You can't click now. Scene is not active.");
+    return;
+  }
 
   // マウス座標を正規化
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -329,7 +391,9 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
   const dracoLoader = new DRACOLoader();
   const mainSceneLoader = new GLTFLoader();
 
-  var mainSceneModel;
+  let mainSceneModel;
+  window.mainSceneModel = mainSceneModel;
+  let mainSceneModelBoolCheck = false;
 
   mainSceneLoader.load( 'models/shigure-depth.3.glb', function ( gltf ) {
 
@@ -377,14 +441,21 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
     //bloom shader time update
     
     //camera movement animation
-    
+
+    //check
     if(mainSceneModel){
+      mainSceneModelBoolCheck = true;
+    }else{
+      mainSceneModelBoolCheck = false;
+    }
+    
+    if(mainSceneModelBoolCheck && window.isSceneActive){
 
       //initialize after mainSceneModel is loaded
       function initialize() {
         // Add your initialization code here
         godrayObject = mainSceneModel.getObjectByName('02_Godray');
-        console.log(godrayObject);
+        //console.log(godrayObject);
         isInitialized = true;
       }
 

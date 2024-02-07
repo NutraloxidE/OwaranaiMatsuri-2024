@@ -209,11 +209,71 @@ function onResize() {
 }
 
 //Activate Scene
-export function ActivateScene() {
-  window.isSceneActive = true;
+function ActivateScene() {
   hideLoadingScreen();
+
+  //play audio
+  if(window.isSceneActive == false) {
+    window.audio = new Audio('audio/r1cefarmwebsite.2.mp3');
+    window.audio.volume = 0.5; // Set the volume to 50%
+    window.audio.play();
+
+    window.audio.addEventListener('ended', function() {
+      this.src = 'audio/r1cefarmwebsite.2.forloop.mp3'; // Change the source to the new audio
+      this.loop = true; // Set the audio to loop
+      this.play(); // Play the new audio
+    });
+
+  }
+
+  window.isSceneActive = true;
 }
 window.ActivateScene = ActivateScene;
+
+/**
+ * 
+ * Audio n stuff
+ * 
+ */
+
+function toggleAudio () {
+  if(window.audio.paused) {
+    window.audio.play();
+    return true;
+  } else {
+    window.audio.pause();
+    return false;
+  }
+}
+
+function playAudio() {
+  if (window.audio) {
+    window.audio.play();
+  }
+}
+window.playAudio = playAudio;
+
+function stopAudio() {
+  if (window.audio) {
+    window.audio.pause();
+    window.audio.currentTime = 0; // Reset the audio to the start
+  }
+}
+window.stopAudio = stopAudio;
+
+function toggleAudioAndImage() {
+  console.log('Toggling audio and image');
+
+  var isPlaying = toggleAudio();
+  var imageElement = document.getElementById('audioToggleImage');
+
+  if (isPlaying) {
+    imageElement.src = 'img/audio-on.png';
+  } else {
+    imageElement.src = 'img/audio-off.png';
+  }
+}
+window.toggleAudioAndImage = toggleAudioAndImage;
 
 //Initialize
 function init() {

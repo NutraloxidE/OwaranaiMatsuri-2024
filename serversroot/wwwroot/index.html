@@ -13,6 +13,11 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- from loading.html -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="loading.css">
+    <script type="module" src="loading.js"></script>
+
     <!--Adobe font here-->
     <script>
     (function(d) {
@@ -87,6 +92,54 @@
             align-items: center;
             padding: 10px 20px;
         }
+
+        /*
+        *
+        * Modal
+        *
+        */
+
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+
+        .modal-backdrop {
+            background: none;
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
     </style>
 </head>
     <body>
@@ -115,12 +168,51 @@
                         </div>
                     </li>
 
+                    <a href="https://www.youtube.com/watch?v=jTJ3Fvyjjt0&list=PLXt2Rnr-oDEn7Ac2CvK_li7Zb6R7RhKMa" target="_blank" class="navbar-brand navbar-langbutton">
+                        <img src="img/youtube-128.png" alt="YouTube" style="width: 70%;">
+                    </a>
+
+                    <a href="https://www.youtube.com/watch?v=jTJ3Fvyjjt0&list=PLXt2Rnr-oDEn7Ac2CvK_li7Zb6R7RhKMa" target="_blank" class="navbar-brand navbar-langbutton">
+                        <img src="img/spotify-2-64.png" alt="Spotify" style="width: 80%;">
+                    </a>
+
+                    <a href="https://soundcloud.com/r1cefarm" target="_blank" class="navbar-brand navbar-langbutton">
+                        <img src="img/soundcloud-256.png" alt="SoundCloud" style="width: 80%;">
+                    </a>
+
+                    <a href="https://discord.gg/QmmEqQ4g7B" target="_blank" class="navbar-brand navbar-langbutton">
+                        <img src="img/discord-64.png" alt="Discord contact me here " style="width: 80%;">
+                    </a>
+
+                    <a href="https://twitter.com/r1cefarm" target="_blank" class="navbar-brand navbar-langbutton">
+                        <img src="img/twitter-64.png" alt="Twitter" style="width: 65%;">
+                    </a>
+
+                    <a href="https://bsky.app/profile/r1cefarm.bsky.social" target="_blank" class="navbar-brand navbar-langbutton">
+                        <img src="img/bluesky-2.png" alt="Blue Sky" style="width: 70%;">
+                    </a>
+
+
+
+                    <!--
+                        
+                        nav bars here
+                        Translations are in translation section of index.js 
+                        follow the same format
+
+                    -->
+
+                    <!--
+
                     <li class="nav-item active">
                         <a class="nav-link" id="nav-home" href="#">ホーム <span class="sr-only">(current)</span></a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" id="nav-profile" href="#">プロフィール</a>
                     </li>
+                    
+
                     <li class="nav-item">
                         <a class="nav-link" id="nav-works" href="#">作品</a>
                     </li>
@@ -133,6 +225,8 @@
                     <li class="nav-item">
                         <a class="nav-link" id="nav-contact" href="#">コンタクト</a>
                     </li>
+
+                    -->
                 </ul>
 
 
@@ -148,17 +242,74 @@
         <!-- 3D sfutt being inserted here -->
         <div id="container"></div>
 
+        <!--Profile modal-->
+        <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="profileModalLabel">プロフィール</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Penis
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Footer -->
         <div class="footer">
+            <a class="navbar-brand navbar-langbutton" href="#" onclick="toggleAudioAndImage()">
+                <img id="audioToggleImage" src="img/audio-on.png" alt="Toggle Audio">
+            </a>
             <a class="navbar-brand navbar-langbutton" href="#">
                 <img src="img/goat-white-Alpha.png" alt="R1cefarm">
             </a>
         </div>
 
+        <!-- Loading Screen -->
         <div id="loading-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; opacity: 1; transition: opacity 1s;">
-            <iframe src="loading.html" style="width: 100%; height: 100%; border: none;"></iframe>
+            <div class="loading">
+                <img class="loading-image" src="img/goat-white-Alpha.smaller.png" alt="Loading image">
+                <div class="loading-text" id="id-loading-text">
+                    <span class="loading-text-words">L</span>
+                    <span class="loading-text-words">O</span>
+                    <span class="loading-text-words">A</span>
+                    <span class="loading-text-words">D</span>
+                    <span class="loading-text-words">I</span>
+                    <span class="loading-text-words">N</span>
+                    <span class="loading-text-words">G</span>
+                </div>
+
+                <!-- Show this after finishing  -->
+                <div class="loading-text" id="id-touch-text" style="display: none;">
+                    <span class="loading-text-words">T</span>
+                    <span class="loading-text-words">O</span>
+                    <span class="loading-text-words">U</span>
+                    <span class="loading-text-words">C</span>
+                    <span class="loading-text-words">H</span>
+                    <span class="loading-text-words">&nbsp;</span>
+                    <span class="loading-text-words">T</span>
+                    <span class="loading-text-words">H</span>
+                    <span class="loading-text-words">E</span>
+                    <span class="loading-text-words">&nbsp;</span>
+                    <span class="loading-text-words">S</span>
+                    <span class="loading-text-words">C</span>
+                    <span class="loading-text-words">R</span>
+                    <span class="loading-text-words">E</span>
+                    <span class="loading-text-words">E</span>
+                    <span class="loading-text-words">N</span>
+                </div>
+
+                <div class="audio-notification">このウェブサイトでは音声が流れます。</div>
+            </div>
         </div>
-        
         <script type="module" src="index.js"></script>
+        <script type="module" src="index-menu-body-eventmanager.js"></script>
     </body>
 </html>

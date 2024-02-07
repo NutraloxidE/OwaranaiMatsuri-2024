@@ -1,5 +1,5 @@
 @import url(https://fonts.googleapis.com/css?family=Quattrocento+Sans);
-
+  
 .loading {
   position: fixed;
   top: 0;
@@ -63,6 +63,51 @@
   animation: blur-text 1.5s 1.2s infinite linear alternate;
 }
 
+.loading-text span:nth-child(8) {
+  filter: blur(0px);
+  animation: blur-text 1.5s 1.4s infinite linear alternate;
+}
+
+.loading-text span:nth-child(9) {
+  filter: blur(0px);
+  animation: blur-text 1.5s 1.6s infinite linear alternate;
+}
+
+.loading-text span:nth-child(10) {
+  filter: blur(0px);
+  animation: blur-text 1.5s 1.8s infinite linear alternate;
+}
+
+.loading-text span:nth-child(11) {
+  filter: blur(0px);
+  animation: blur-text 1.5s 2s infinite linear alternate;
+}
+
+.loading-text span:nth-child(12) {
+  filter: blur(0px);
+  animation: blur-text 1.5s 2.2s infinite linear alternate;
+}
+
+.loading-text span:nth-child(13) {
+  filter: blur(0px);
+  animation: blur-text 1.5s 2.4s infinite linear alternate;
+}
+
+.loading-text span:nth-child(14) {
+  filter: blur(0px);
+  animation: blur-text 1.5s 2.6s infinite linear alternate;
+}
+
+.loading-text span:nth-child(15) {
+  filter: blur(0px);
+  animation: blur-text 1.5s 2.8s infinite linear alternate;
+}
+
+.loading-text span:nth-child(16) {
+  filter: blur(0px);
+  animation: blur-text 1.5s 3s infinite linear alternate;
+}
+
 @keyframes blur-text {
   0% {
     filter: blur(0px);
@@ -77,8 +122,9 @@
     max-height: 50%; /* 画像の最大高さを50%に設定 */
 }
 
-.audio-notification {
-    color: #fff;
-    font-size: 20px;
-    margin-top: 20px;
+.loading .audio-notification {
+  color: #fff;
+  font-size: 12px; /* フォントサイズを小さくする */
+  margin-top: 20px;
 }
+  

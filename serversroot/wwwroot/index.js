@@ -50,16 +50,19 @@ window.addEventListener('load', function() {
   SceneBeingLoaded = true;
 }); */
 
-let loadingScreen;
 
 window.onload = function() {
   SceneBeingLoaded = true;  
-  loadingScreen = document.getElementById('loading-screen');
+  
 
-  console.log(loadingScreen);
+
 }
 
-export function hideLoadingScreen() {
+function hideLoadingScreen() {
+  
+  let loadingScreen = document.getElementById('loading-screen');
+  //console.log(document.getElementsByTagName('body')[0]);
+
   if(loadingScreen){
     loadingScreen.style.opacity = '0';
 
@@ -135,8 +138,6 @@ const edgeDarkeningShader = {
     "}"
   ].join("\n")
 };
-
-
 
 const contrastShader = {
   uniforms: {
@@ -254,6 +255,9 @@ const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
 function onMouseClick(event) {
+
+
+
 
   //touch to screen event for loading screen
   if(SceneBeingLoaded == true){

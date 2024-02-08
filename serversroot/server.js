@@ -44,7 +44,7 @@ app.use((req, res, next) => {
 });
 
 // メインアプリを指定のポートで起動
-const PORT = 3000;
+const PORT = 443;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

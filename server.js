@@ -1,9 +1,9 @@
 const express = require('express');
 const vhost = require('vhost');
-const https = require('https'); // httpsモジュールを要求
-const fs = require('fs'); // fsモジュールを要求
+const https = require('https');
+const fs = require('fs');
 
-const PORT = 443; // ポート番号を設定
+const PORT = 443;
 
 const app = express();
 
@@ -20,11 +20,11 @@ Object.entries(subdomainRoutes).forEach(([subdomain, rootDirectory]) => {
 });
 
 app.use(vhost('www.localhost', (req, res) => {
-  res.redirect('https://localhost:${PORT}' + req.url); // httpをhttpsに変更
+  res.redirect('https://localhost:${PORT}' + req.url);
 }));
 
 app.use(vhost('www.r1ce.farm', (req, res) => {
-  res.redirect('https://r1ce.farm:${PORT}' + req.url); // httpをhttpsに変更
+  res.redirect('https://r1ce.farm:${PORT}' + req.url);
 }));
 
 app.use(express.static('wwwroot'));
@@ -33,27 +33,24 @@ app.use((req, res, next) => {
   res.status(404).sendFile(__dirname + '/public/404.html');
 });
 
-// SSL証明書を読み込む
-let options= {
-  key: fs.readFileSync('/etc/letsencrypt/live/r1ce.farm/privkey.pem'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/r1ce.farm/fullchain.pem')
-};
+let options = {};
 
-// コマンドライン引数を取得
 var args = process.argv.slice(2);
 
-// テスト環境であった場合、自己証明書に切り替え
 if (args.includes('-test')) {
   console.log('テストモードで実行します');
-  options= {
+  options = {
     key: fs.readFileSync('key.pem'),
     cert: fs.readFileSync('cert.pem')
   };
 } else {
   console.log('通常モードで実行します');
+  options = {
+    key: fs.readFileSync('/etc/letsencrypt/live/r1ce.farm/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/r1ce.farm/fullchain.pem')
+  };
 }
 
-// HTTPSサーバーを作成
 https.createServer(options, app).listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

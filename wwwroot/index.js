@@ -247,16 +247,22 @@ function toggleAudio () {
 }
 
 function playAudio() {
+  var imageElement = document.getElementById('audioToggleImage');
+
+  
   if (window.audio) {
+    imageElement.src = 'img/audio-on.png';
     window.audio.play();
   }
 }
 window.playAudio = playAudio;
 
 function stopAudio() {
+  var imageElement = document.getElementById('audioToggleImage');
+
   if (window.audio) {
+    imageElement.src = 'img/audio-off.png';
     window.audio.pause();
-    window.audio.currentTime = 0; // Reset the audio to the start
   }
 }
 window.stopAudio = stopAudio;

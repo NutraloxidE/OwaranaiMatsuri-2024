@@ -34,10 +34,24 @@ app.use((req, res, next) => {
 });
 
 // SSL証明書を読み込む
-const options = {
-  key: fs.readFileSync('key.pem'),
-  cert: fs.readFileSync('cert.pem')
+let options= {
+  key: fs.readFileSync('/etc/letsencrypt/live/r1ce.farm/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/r1ce.farm/fullchain.pem')
 };
+
+// コマンドライン引数を取得
+var args = process.argv.slice(2);
+
+// テスト環境であった場合、自己証明書に切り替え
+if (args.includes('-test')) {
+  console.log('テストモードで実行します');
+  options= {
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+  };
+} else {
+  console.log('通常モードで実行します');
+}
 
 // HTTPSサーバーを作成
 https.createServer(options, app).listen(PORT, () => {

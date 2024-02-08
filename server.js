@@ -1,5 +1,5 @@
 const express = require('express');
-const vhost = require('vhost'); // ワイルドカードサブドメインをサポートするために使用できるパッケージ
+const vhost = require('vhost'); // ワイルドカードサブドメインをサポートするために使用できるパッケージa
 
 const app = express();
 

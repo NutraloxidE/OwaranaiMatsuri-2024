@@ -2,6 +2,7 @@ const express = require('express');
 const vhost = require('vhost');
 const https = require('https');
 const fs = require('fs');
+const { exec } = require('child_process'); // 追加
 
 const PORT = 443;
 
@@ -27,11 +28,26 @@ app.use(vhost('www.r1ce.farm', (req, res) => {
   res.redirect('https://r1ce.farm:${PORT}' + req.url);
 }));
 
+//routing
+
 app.use(express.static('wwwroot'));
 app.use(express.static(__dirname + '/public'));
 app.use((req, res, next) => {
   res.status(404).sendFile(__dirname + '/public/404.html');
 });
+
+app.get('/controls/gitpull', (req, res) => {
+  exec('git pull https://github.com/NutraloxidE/OwaranaiMatsuri-2024', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+    console.error(`stderr: ${stderr}`);
+  });
+  res.send('Git pull executed');
+});
+
 
 let options = {};
 

@@ -53,9 +53,7 @@ window.addEventListener('load', function() {
 
 window.onload = function() {
   SceneBeingLoaded = true;  
-  
-
-
+  document.getElementById('id-audio-notification').innerText = 'ロード完了、クリックおよびタップしてください';
 }
 
 function hideLoadingScreen() {

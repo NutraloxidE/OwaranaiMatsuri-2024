@@ -28,7 +28,9 @@ app.use(vhost('www.r1ce.farm', (req, res) => {
   res.redirect('https://r1ce.farm:${PORT}' + req.url);
 }));
 
-//routing
+/*
+ *Routings under here 
+*/
 
 app.get('/controls/gitpull', (req, res) => {
   exec('git pull https://github.com/NutraloxidE/OwaranaiMatsuri-2024', (error, stdout, stderr) => {
@@ -42,6 +44,7 @@ app.get('/controls/gitpull', (req, res) => {
   res.send('Git pull executed');
 });
 
+//
 app.use(express.static('wwwroot'));
 app.use(express.static(__dirname + '/public'));
 app.use((req, res, next) => {

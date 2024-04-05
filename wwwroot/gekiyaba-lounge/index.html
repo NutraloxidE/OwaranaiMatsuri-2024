@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>R1cefarm</title>
+    <meta property="og:title" content="R1cefarm">
+    <meta property="og:description" content="About R1cefarm">
+    <meta property="og:image" content="img/embeded.jpg">
+    <meta property="og:url" content="https://r1ce.farm">
+    <link rel="icon" href="img/icon.png">
+    <link rel="stylesheet" href="css.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@700&display=swap" rel="stylesheet"> <!-- Noto Sans Boldをインポート -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script src="https://threejsfundamentals.org/threejs/resources/threejs/r127/build/three.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- from loading.html -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="loading.css">
+    <script type="module" src="loading.js"></script>
+
+    <!--Adobe font here-->
+    <script>
+    (function(d) {
+        var config = {
+            kitId: 'hcj4yxq',
+            scriptTimeout: 3000,
+            async: true
+        },
+        h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+    })(document);
+    </script>
+
+    <style>
+        .navbar, .navbar-light, .bg-light {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 1;
+            background-color: #222530d8;
+        }
+        .navbar-brand img {
+            max-width: 100px; /* Adjust as needed */
+            max-height: 50px; /* Adjust as needed */
+        }
+        .navbar-langbutton img {
+            max-width: 50px; /* Adjust as needed */
+            max-height: 50px; /* Adjust as needed */
+        }
+        .navbar-nav .nav-link {
+            color: white; /* Change the color to white */
+            font-size: 18px; /* Increase the font size */
+            font-family: "ta-oonishi", sans-serif; /* Use Noto Sans Bold */
+            font-weight: 700; /* Make the font bold */
+        }
+        .dropdown-menu {
+            background-color: #222530d8;
+        }
+        .dropdown-item
+        {   
+            color: white;
+            font-size: 18px; /* Increase the font size */
+            font-family: "ta-oonishi", sans-serif; /* Use Noto Sans Bold */
+            font-weight: 700; /* Make the font bold */
+        }
+        .nav-item {
+            align-items: center;
+            display: flex;
+            margin-right: 1rem; /* Add margin to separate nav items */
+        }
+
+        .nav-link {
+            color: white !important;
+            line-height: 1;
+            color: white; /* Change the color to white */
+            text-decoration: none; /* Remove underline */
+            padding: 0.5rem; /* Add padding for better spacing */
+            transition: color 0.3s; /* Add transition effect for color change */
+        }
+
+        .nav-link:hover {
+            color: #aaa; /* Change the color on hover */
+        }
+
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: #222530d8;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        /*
+        *
+        * Modal
+        *
+        */
+
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+
+        .modal-backdrop {
+            background: none;
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+    <body>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="navbar-brand navbar-langbutton" href="#">
+                <img src="img/goat-white-Alpha.png" alt="R1cefarm">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- left half-->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+
+                    <li class="nav-item dropdown mr-3">
+                        <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="display: flex; align-items: center;">
+                            <img src="img/earth3.gif" alt="Language Selection" class="nav-link" style="height: 2em;" />
+                            <i class="bi bi-caret-down-fill"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton2">
+                            <a class="dropdown-item" href="#" onclick="switchLanguage('en')"><i class="flag-icon flag-icon-us"></i> English</a>
+                            <a class="dropdown-item" href="#" onclick="switchLanguage('ja')"><i class="flag-icon flag-icon-jp"></i> 日本語</a>
+                            <!-- 他の言語を追加することも可能です -->
+                        </div>
+                    </li>
+
+                    <a href="https://www.youtube.com/watch?v=jTJ3Fvyjjt0&list=PLXt2Rnr-oDEn7Ac2CvK_li7Zb6R7RhKMa" target="_blank" class="navbar-brand navbar-langbutton" onclick="stopAudio()">
+                        <img src="img/youtube-128.png" alt="YouTube" style="width: 70%;">
+                    </a>
+
+                    <a href="https://open.spotify.com/intl-ja/track/42a1FQK7JoUs0opp02qJIN?si=72f07f4af78e4694" target="_blank" class="navbar-brand navbar-langbutton" onclick="stopAudio()">
+                        <img src="img/spotify-2-64.png" alt="Spotify" style="width: 80%;">
+                    </a>
+
+                    <a href="https://soundcloud.com/r1cefarm" target="_blank" class="navbar-brand navbar-langbutton" onclick="stopAudio()">
+                        <img src="img/soundcloud-256.png" alt="SoundCloud" style="width: 80%;">
+                    </a>
+
+                    <a href="https://discord.gg/QmmEqQ4g7B" target="_blank" class="navbar-brand navbar-langbutton">
+                        <img src="img/discord-64.png" alt="Discord contact me here " style="width: 80%;">
+                    </a>
+
+                    <a href="https://twitter.com/r1cefarm" target="_blank" class="navbar-brand navbar-langbutton">
+                        <img src="img/twitter-64.png" alt="Twitter" style="width: 65%;">
+                    </a>
+
+                    <a href="https://bsky.app/profile/r1cefarm.bsky.social" target="_blank" class="navbar-brand navbar-langbutton">
+                        <img src="img/bluesky-2.png" alt="Blue Sky" style="width: 70%;">
+                    </a>
+
+
+
+                    <!--
+                        
+                        nav bars here
+                        Translations are in translation section of index.js 
+                        follow the same format
+
+                    -->
+
+                    <!--
+
+                    <li class="nav-item active">
+                        <a class="nav-link" id="nav-home" href="#">ホーム <span class="sr-only">(current)</span></a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="nav-profile" href="#">プロフィール</a>
+                    </li>
+                    
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="nav-works" href="#">作品</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="nav-events" href="#">イベント</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="nav-blog" href="#">ブログ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="nav-contact" href="#">コンタクト</a>
+                    </li>
+
+                    -->
+                </ul>
+
+
+            </div>
+
+            <!-- right half -->
+            <div class="navbar-nav ml-auto">
+
+            </div>
+
+        </nav>
+
+        <!-- 3D sfutt being inserted here -->
+        <div id="container"></div>
+
+        <!--Profile modal-->
+        <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="profileModalLabel">プロフィール</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Penis
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <a class="navbar-brand navbar-langbutton" href="#" onclick="toggleAudioAndImage()">
+                <img id="audioToggleImage" src="img/audio-on.png" alt="Toggle Audio">
+            </a>
+            <a class="navbar-brand navbar-langbutton" href="#">
+                <img src="img/goat-white-Alpha.png" alt="R1cefarm">
+            </a>
+        </div>
+
+        <!-- Loading Screen -->
+        <div id="loading-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; opacity: 1; transition: opacity 1s;">
+            <div class="loading">
+                <img class="loading-image" src="img/goat-white-Alpha.smaller.png" alt="Loading image">
+                <div class="loading-text" id="id-loading-text">
+                    <span class="loading-text-words">L</span>
+                    <span class="loading-text-words">O</span>
+                    <span class="loading-text-words">A</span>
+                    <span class="loading-text-words">D</span>
+                    <span class="loading-text-words">I</span>
+                    <span class="loading-text-words">N</span>
+                    <span class="loading-text-words">G</span>
+                </div>
+
+                <!-- Show this after finishing  -->
+                <div class="loading-text" id="id-touch-text" style="display: none;">
+                    <span class="loading-text-words">T</span>
+                    <span class="loading-text-words">O</span>
+                    <span class="loading-text-words">U</span>
+                    <span class="loading-text-words">C</span>
+                    <span class="loading-text-words">H</span>
+                    <span class="loading-text-words">&nbsp;</span>
+                    <span class="loading-text-words">T</span>
+                    <span class="loading-text-words">H</span>
+                    <span class="loading-text-words">E</span>
+                    <span class="loading-text-words">&nbsp;</span>
+                    <span class="loading-text-words">S</span>
+                    <span class="loading-text-words">C</span>
+                    <span class="loading-text-words">R</span>
+                    <span class="loading-text-words">E</span>
+                    <span class="loading-text-words">E</span>
+                    <span class="loading-text-words">N</span>
+                </div>
+
+                <div class="audio-notification" id="id-audio-notification" >このウェブサイトでは音声が流れます。</div>
+            </div>
+        </div>
+        <script type="module" src="index.js"></script>
+        <script type="module" src="index-menu-body-eventmanager.js"></script>
+    </body>
+</html>

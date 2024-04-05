@@ -1,0 +1,15 @@
+body {
+    background-color: #2b2a2a;
+}
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+#overlay {
+	position: absolute;
+	font-size: 16px;
+	z-index: 2;
+	top: 0;
+	left: 0;
+}

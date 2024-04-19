@@ -189,6 +189,7 @@ let camera, scene, renderer, composer, renderPass, effectPass;
 let isSceneActive = false;
 window.isSceneActive = isSceneActive;
 
+let sceneActivationTime = null;
 
 let width, height;
 
@@ -212,18 +213,12 @@ function ActivateScene() {
 
   //play audio
   if(window.isSceneActive == false) {
-    window.audio = new Audio('audio/r1cefarmwebsite.2.mp3');
+    window.audio = new Audio('audio/GekiyabaLoungeWEB.mp3');
     window.audio.volume = 0.5; // Set the volume to 50%
     window.audio.play();
-
-    window.audio.addEventListener('ended', function() {
-      this.src = 'audio/r1cefarmwebsite.2.forloop.mp3'; // Change the source to the new audio
-      this.loop = true; // Set the audio to loop
-      this.play(); // Play the new audio
-    });
-
   }
 
+  sceneActivationTime = Date.now();
   window.isSceneActive = true;
 }
 window.ActivateScene = ActivateScene;
@@ -324,7 +319,7 @@ function onMouseClick(event) {
 
 
   //touch to screen event for loading screen
-  if(SceneBeingLoaded == true){
+  if(SceneBeingLoaded == true && window.isSceneActive == false){
     console.log("Attempting to activate scene...")
     window.ActivateScene();
   }
@@ -375,31 +370,6 @@ function startAnimation(object, animationName) {
  * Scenes (like in unity lmao)
  * ######################################
  */
-
-//Templete (copy paste this to make new scene)
-function sceneFunc_simpleTemplete() {
-  scene = new THREE.Scene();
-
-  // カメラを作成
-  camera = new THREE.PerspectiveCamera(45, width / height);
-  camera.position.set(0, 0, +500);
-
-  // create box
-  const geometry = new THREE.BoxGeometry(200, 200, 200);
-  const material = new THREE.MeshNormalMaterial();
-  const box = new THREE.Mesh(geometry, material);
-  scene.add(box);
-
-  onUpdate_PerFrame();
-
-  function onUpdate_PerFrame() {
-    box.rotation.y += 0.01;
-
-    //DO NOT EDIT LOWER THAN HERE ()
-    renderer.render(scene, camera);
-    requestAnimationFrame(onUpdate_PerFrame);
-  }
-}
 
 function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
   scene = new THREE.Scene();
@@ -456,7 +426,6 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
 
 
   // Main Scene
-  const dracoLoader = new DRACOLoader();
   const mainSceneLoader = new GLTFLoader();
 
   let mainSceneModel;
@@ -497,7 +466,15 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
 
   //init for onUpdate_PerFrame 
   let isSmartphone = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
   let godrayObject;
+
+  let gkybL_Objects = [];
+  let gkybL_Objects_isHidden = false;
+
+  let cut1_Objects = [];
+  let cut1_Objects_isHidden = false;
+
   let isInitialized = false;
   let brightness = 0;
   let change = 0;
@@ -505,10 +482,6 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
   //update per frame
   function onUpdate_PerFrame(e) {
     passedFrame += 1;
-
-    //bloom shader time update
-    
-    //camera movement animation
 
     //check
     if(mainSceneModel){
@@ -522,8 +495,15 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
       //initialize after mainSceneModel is loaded
       function initialize() {
         // Add your initialization code here
+        
+        /*
+        Load the objects you want to manipulate here
+        */
+
         godrayObject = mainSceneModel.getObjectByName('02_Godray');
-        //console.log(godrayObject);
+        gkybL_Objects = mainSceneModel.children.filter(child => child.name.includes('GkybL_'));
+        cut1_Objects = mainSceneModel.children.filter(child => child.name.includes('Cut1_'));
+
         isInitialized = true;
       }
 
@@ -595,7 +575,50 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
       }
       cameraMouseBias = new THREE.Vector3(cameraMouseBiasWidth, cameraMouseBiasHeight * -1, 0);
       cameraAdditionalMovements = cameraAdditionalMovements.add(cameraMouseBias);
-      
+
+      //Control Object by Audio timeline
+      if (window.audio && !window.audio.paused) {
+
+        // 再生時間を取得します
+        const bias = 0.08;
+        const playTime = (Date.now() - sceneActivationTime) / 1000 + bias; // Convert to seconds and add bias
+    
+        // 再生時間に基づいてシーンを制御します
+        if (playTime >= 0 && playTime < 0.85) {
+          //make GkybL_Objects invisible
+          if(!gkybL_Objects_isHidden){
+            gkybL_Objects.forEach((object) => { 
+              object.material.transparent = true;
+              object.material.opacity = 0;
+            });
+            gkybL_Objects_isHidden = true;
+          }
+
+        } else if (playTime >= 0.85 && playTime < 1.71) {
+
+        } else if (playTime >= 1.71) {
+
+          if(!cut1_Objects_isHidden) {
+            cut1_Objects.forEach((object) => { 
+              object.material.transparent = true;
+              object.material.opacity = 0;
+            });
+            cut1_Objects_isHidden = true;
+          }
+
+          //make GkybL_Objects visible
+          if(gkybL_Objects_isHidden){
+            gkybL_Objects.forEach((object) => { 
+              object.material.transparent = true;
+              object.material.opacity = 1;
+            });
+            gkybL_Objects_isHidden = false;
+          }
+
+        }
+        // 他の時間範囲に対するアクションも同様に追加できます
+      }  
+          
       //finalize camera position (with lerp) easing
       cameraResultedPositionForThisFrame = cameraTargetPosition.clone();
       cameraResultedPositionForThisFrame = cameraResultedPositionForThisFrame.add(cameraAdditionalMovements);

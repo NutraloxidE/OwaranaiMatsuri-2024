@@ -377,6 +377,8 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
   const cameraIntroFinalPosition = new THREE.Vector3(0, 150, +520);
   const cameraIntroStartPosition = new THREE.Vector3(0, 150, -400);
 
+  const cameraHalfwayPosition = new THREE.Vector3(0, 150, +60);
+
   // カメラを作成
   camera = new THREE.PerspectiveCamera(45, width / height);
   //camera.position.set(0, 150, +500);
@@ -475,6 +477,9 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
   let cut1_Objects = [];
   let cut1_Objects_isHidden = false;
 
+  let cut2_Objects = [];
+  let cut2_Objects_isHidden = false;
+
   let isInitialized = false;
   let brightness = 0;
   let change = 0;
@@ -503,6 +508,7 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
         godrayObject = mainSceneModel.getObjectByName('02_Godray');
         gkybL_Objects = mainSceneModel.children.filter(child => child.name.includes('GkybL_'));
         cut1_Objects = mainSceneModel.children.filter(child => child.name.includes('Cut1_'));
+        cut2_Objects = mainSceneModel.children.filter(child => child.name.includes('Cut2_'));
 
         isInitialized = true;
       }
@@ -594,16 +600,46 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
             gkybL_Objects_isHidden = true;
           }
 
+          if(!cut2_Objects_isHidden) {
+            cut2_Objects.forEach((object) => { 
+              object.material.transparent = true;
+              object.material.opacity = 0;
+            });
+            cut2_Objects_isHidden = true;
+          }
+
         } else if (playTime >= 0.85 && playTime < 1.71) {
 
-        } else if (playTime >= 1.71) {
-
           if(!cut1_Objects_isHidden) {
+
+            camera.position.copy(cameraHalfwayPosition);
+
             cut1_Objects.forEach((object) => { 
               object.material.transparent = true;
               object.material.opacity = 0;
             });
             cut1_Objects_isHidden = true;
+          }
+
+          if(cut2_Objects_isHidden) {
+            cut2_Objects.forEach((object) => { 
+              object.material.transparent = true;
+              object.material.opacity = 1;
+            });
+            cut2_Objects_isHidden = false;
+          }
+
+        } else if (playTime >= 1.71) {
+
+          if(!cut2_Objects_isHidden) {
+
+            camera.position.copy(cameraHalfwayPosition);
+            
+            cut2_Objects.forEach((object) => { 
+              object.material.transparent = true;
+              object.material.opacity = 0;
+            });
+            cut2_Objects_isHidden = true;
           }
 
           //make GkybL_Objects visible

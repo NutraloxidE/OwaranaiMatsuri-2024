@@ -166,6 +166,24 @@ const contrastShader = {
 };
 
 /**
+ *  Music player
+ */
+
+class AudioWithInfo {
+  constructor(audio, BPM, timebias = 0) {
+    this.audio = audio;
+    this.BPM = BPM;
+    this.timebias = 0; //(in seconds)
+  }
+}
+
+const audioList = [
+  new AudioWithInfo(new Audio('audio/GekiyabaLoungeWEB.mp3'), 120),
+  new AudioWithInfo(new Audio('audio/GekiyabaLoungeWEB.mp3'), 120),
+  new AudioWithInfo(new Audio('audio/GekiyabaLoungeWEB.mp3'), 120)
+];
+
+/**
  * ######################################
  * Initializes
  * ######################################
@@ -582,7 +600,7 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
       cameraMouseBias = new THREE.Vector3(cameraMouseBiasWidth, cameraMouseBiasHeight * -1, 0);
       cameraAdditionalMovements = cameraAdditionalMovements.add(cameraMouseBias);
 
-      //Control Object by Audio timeline
+      //Intro scene control
       if (window.audio && !window.audio.paused) {
 
         // 再生時間を取得します

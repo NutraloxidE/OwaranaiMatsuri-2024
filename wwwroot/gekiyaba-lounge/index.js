@@ -385,7 +385,7 @@ function startAnimation(object, animationName) {
 
 /**
  * ######################################
- * Scenes (like in unity lmao)
+ * Scenes (like in unity lmao)a
  * ######################################
  */
 
@@ -399,7 +399,7 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
 
   //check if height is bigger than width, if its bigger, final destination should be a bit far
   if(window.innerHeight > window.innerWidth){
-    cameraIntroFinalPosition = new THREE.Vector3(0, 150, +820);
+    cameraIntroFinalPosition = new THREE.Vector3(0, 150, +860);
     cameraIntroStartPosition = new THREE.Vector3(0, 150, 0);
     cameraHalfwayPosition = new THREE.Vector3(0, 150, +60);
   }

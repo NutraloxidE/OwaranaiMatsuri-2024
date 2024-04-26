@@ -458,7 +458,7 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
     mainSceneModel.position.set( 0, 0, 0 );
     mainSceneModel.scale.set( 50, 50, 50 );
     scene.add( mainSceneModel );
-
+    
   }, undefined, function ( e ) {
 
     console.error( e );
@@ -488,6 +488,9 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
   let isSmartphone = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   let godrayObject;
+  let GkybL_USB3dObject;
+  let usbStableSpinSpeed = 2;
+  let usbcurrentSpinSpeed = 0;
 
   let gkybL_Objects = [];
   let gkybL_Objects_isHidden = false;
@@ -524,6 +527,8 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
         */
 
         godrayObject = mainSceneModel.getObjectByName('02_Godray');
+        GkybL_USB3dObject = mainSceneModel.getObjectByName('GkybL_USB3d');
+
         gkybL_Objects = mainSceneModel.children.filter(child => child.name.includes('GkybL_'));
         cut1_Objects = mainSceneModel.children.filter(child => child.name.includes('Cut1_'));
         cut2_Objects = mainSceneModel.children.filter(child => child.name.includes('Cut2_'));
@@ -592,6 +597,13 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
         godrayObject.material.opacity = brightness;
       }
 
+      function spinUSB() {
+        // Spin the USB, usbcurrentSpinSpeed always lerp back to usbStableSpinSpeed every frame
+        usbcurrentSpinSpeed = THREE.MathUtils.lerp(usbcurrentSpinSpeed, usbStableSpinSpeed, 0.039);
+        GkybL_USB3dObject.rotation.y += usbcurrentSpinSpeed * 0.01;
+      }
+      spinUSB();
+
       ///move with mouse coordinate
       window.onmousemove = function (e) {
         cameraMouseBiasWidth = ((e.clientX / window.parent.window.innerWidth) - 0.5) * 100;
@@ -649,10 +661,14 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
 
         } else if (playTime >= 1.71) {
 
+          //make GkybL_Objects visible just for the first time (one frame)
           if(!cut2_Objects_isHidden) {
 
+            //spin usb faster
+            usbcurrentSpinSpeed = 50;
+
             camera.position.copy(cameraHalfwayPosition);
-            
+
             cut2_Objects.forEach((object) => { 
               object.material.transparent = true;
               object.material.opacity = 0;

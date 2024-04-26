@@ -392,10 +392,18 @@ function startAnimation(object, animationName) {
 function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
   scene = new THREE.Scene();
 
-  const cameraIntroFinalPosition = new THREE.Vector3(0, 150, +520);
-  const cameraIntroStartPosition = new THREE.Vector3(0, 150, -400);
+  //defining intro and final camera position
+  let cameraIntroFinalPosition = new THREE.Vector3(0, 150, +520);
+  let cameraIntroStartPosition = new THREE.Vector3(0, 150, -400);
+  let cameraHalfwayPosition = new THREE.Vector3(0, 150, +60);
 
-  const cameraHalfwayPosition = new THREE.Vector3(0, 150, +60);
+  //check if height is bigger than width, if its bigger, final destination should be a bit far
+  if(window.innerHeight > window.innerWidth){
+    cameraIntroFinalPosition = new THREE.Vector3(0, 150, +820);
+    cameraIntroStartPosition = new THREE.Vector3(0, 150, 0);
+    cameraHalfwayPosition = new THREE.Vector3(0, 150, +60);
+  }
+
 
   // カメラを作成
   camera = new THREE.PerspectiveCamera(45, width / height);
@@ -665,7 +673,7 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
           if(!cut2_Objects_isHidden) {
 
             //spin usb faster
-            usbcurrentSpinSpeed = 50;
+            usbcurrentSpinSpeed = 39;
 
             camera.position.copy(cameraHalfwayPosition);
 

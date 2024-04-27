@@ -166,22 +166,34 @@ const contrastShader = {
 };
 
 /**
- *  Music player
+ *  Music player / audio player
  */
 
+let playButtonObjects = [];
+let stopButtonObjects = [];
+
 class AudioWithInfo {
-  constructor(audio, BPM, timebias = 0) {
-    this.audio = audio;
+  constructor(audioURI, BPM, timebias = 0) {
+    this.audioURI = audioURI;
     this.BPM = BPM;
     this.timebias = 0; //(in seconds)
+    this.isPlaying = false;
   }
 }
 
+let currentAudioIndex = -1;
+
 const audioList = [
-  new AudioWithInfo(new Audio('audio/GekiyabaLoungeWEB.mp3'), 120),
-  new AudioWithInfo(new Audio('audio/GekiyabaLoungeWEB.mp3'), 120),
-  new AudioWithInfo(new Audio('audio/GekiyabaLoungeWEB.mp3'), 120)
+  new AudioWithInfo('audio/1.R1cefarm - Entering the torii gate.mp3', 95),
+  new AudioWithInfo('audio/2.RENKA Chan - GEKIYABA DISCO.mp3', 132),
+  new AudioWithInfo('audio/3.tomatoism - G.G.G.mp3', 145),
+  new AudioWithInfo('audio/4.R1cefarm - R1ce phonk.mp3', 120),
+  new AudioWithInfo('audio/5.uncalc - アイコンタクト.mp3', 132),
+  new AudioWithInfo('audio/6.R1cefarm & Shiroroll - Killing it.mp3', 140),
+  new AudioWithInfo('audio/7.R1cefarm - Onigiri Eater.mp3', 156),
+  new AudioWithInfo('audio/8.uncalc - restart.mp3', 160)
 ];
+window.audioList = audioList;
 
 /**
  * ######################################
@@ -367,6 +379,60 @@ function onMouseClick(event) {
       console.log("bahhhh");
     }
 
+    //audio player and button visibility control
+    if (/^GkybL_Play-button_00[0-7]$/.test(clickedObject.name)) {
+      const ClickedIndex = parseInt(clickedObject.name.slice(-1), 10);
+
+      console.log("Play button clicked " + ClickedIndex);
+      playAudio();
+
+      
+      //play if its not playing
+      if (audioList[ClickedIndex].isPlaying == false) {
+        console.log("Going to play audio");
+
+        //stop all audio, and set isPlaying to false
+        audioList.forEach((audio) => {
+          audio.isPlaying = false;
+        });
+        if (window.audio) {
+          window.audio.pause();
+          window.audio = null;
+        }
+
+        //set all stop buttons to invisible and play buttons to visible
+        playButtonObjects.forEach(object => object.visible = true);
+        stopButtonObjects.forEach(object => object.visible = false);
+
+        //play audio
+        window.audio = new Audio(audioList[ClickedIndex].audioURI);
+        window.audio.volume = 0.5; // Set the volume to 50%
+        window.audio.play();
+
+        //set isPlaying to true
+        window.audioList[ClickedIndex].isPlaying = true;
+
+        //change button visibility
+        clickedObject.visible = false;
+        stopButtonObjects[ClickedIndex].visible = true;
+      }else if(audioList[ClickedIndex].isPlaying == true) {
+        console.log("Going to stop audio");
+
+        //stop audio
+        window.audio.pause();
+        window.audio = null;
+
+        //set isPlaying to false
+        window.audioList[ClickedIndex].isPlaying = false;
+
+        //change button visibility
+        clickedObject.visible = true;
+        stopButtonObjects[ClickedIndex].visible = false;
+      }
+
+
+    }
+
   }
 }
 
@@ -509,6 +575,8 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
   let cut2_Objects = [];
   let cut2_Objects_isHidden = false;
 
+
+
   let isInitialized = false;
   let brightness = 0;
   let change = 0;
@@ -540,6 +608,14 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
         gkybL_Objects = mainSceneModel.children.filter(child => child.name.includes('GkybL_'));
         cut1_Objects = mainSceneModel.children.filter(child => child.name.includes('Cut1_'));
         cut2_Objects = mainSceneModel.children.filter(child => child.name.includes('Cut2_'));
+
+        playButtonObjects = mainSceneModel.children
+          .filter(child => child.name.includes('GkybL_Play-button_'))
+          .sort((a, b) => a.name.localeCompare(b.name));
+      
+        stopButtonObjects = mainSceneModel.children
+          .filter(child => child.name.includes('GkybL_Stop-button_'))
+          .sort((a, b) => a.name.localeCompare(b.name));
 
         isInitialized = true;
       }
@@ -674,6 +750,10 @@ function sceneFunc_OwaranaiMatsuriPrototypeVer2() {
 
             //spin usb faster
             usbcurrentSpinSpeed = 39;
+
+            //make play button visible and hide stop button
+            playButtonObjects.forEach(object => object.visible = true);
+            stopButtonObjects.forEach(object => object.visible = false);
 
             camera.position.copy(cameraHalfwayPosition);
 

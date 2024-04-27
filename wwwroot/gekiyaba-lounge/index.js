@@ -384,8 +384,6 @@ function onMouseClick(event) {
       const ClickedIndex = parseInt(clickedObject.name.slice(-1), 10);
 
       console.log("Play button clicked " + ClickedIndex);
-      playAudio();
-
       
       //play if its not playing
       if (audioList[ClickedIndex].isPlaying == false) {
@@ -418,9 +416,24 @@ function onMouseClick(event) {
       }else if(audioList[ClickedIndex].isPlaying == true) {
         console.log("Going to stop audio");
 
-        //stop audio
+        //fade out audio
+        var fadeOutInterval = setInterval(function() {
+          // Reduce volume by 0.05 as long as it is above 0
+          // This works as long as you start with a multiple of 0.05!
+          if (window.audio.volume > 0.035) {
+            window.audio.volume -= 0.011;
+          } else {
+            // Stop the setInterval when 0 is reached
+            clearInterval(fadeOutInterval);
+            window.audio.pause();
+            window.audio = null;
+          }
+        }, 25);
+
+        /*/stop audio 
         window.audio.pause();
         window.audio = null;
+        */
 
         //set isPlaying to false
         window.audioList[ClickedIndex].isPlaying = false;
